@@ -1,3 +1,40 @@
+<?php
+//ovde pre usera importujemo db brokera
+require "dbBroker.php";
+require "model/user.php";
+
+session_start();
+if(isset($_POST['username']) &&
+isset($_POST['password'])){
+    $uname = $_POST['username'];
+    $upass = $_POST['password'];
+
+    $conn = new mysqli();
+
+    $korisnik = new User(null, $uname,$upass);
+   // $odg = $korisnik->logInUser($uname,$upass,mysqli);
+
+   $odg = User::logInUser($korisnik,$conn);
+   //pristup stat. fjama preko klase
+
+
+   //ako je odg pozitivan idemo na home page
+   if($odg->num_rows==1){
+    //znak ` sluzi za pisanje stringa u vise redova
+    echo `<script>
+    console.log("Uspesno ste se ulogovali"); 
+    </script> `;
+    $_SESSION['user_id'] = $korisnik->id;
+    header('Location: home.php');
+    exit();
+   }else{
+    echo `<script>
+    console.log("Niste se prijavili"); 
+    </script> `;
+   }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
